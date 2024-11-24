@@ -48,16 +48,9 @@ GROUPS = {
 
 ### Ethernet Ring Protection switching (ERPS)
 
-The EPRS configuration describes multiple rings. All switches in the `major-ring` has two interface ports `west` and `east`, the Ring Protection Link (RPL) owner and a control VLAN. The main ring includes all sub-rings control VLANs aw well.
+The EPRS configuration describes multiple rings. All switches in the `major-ring` has two interface ports `west` and `east`, the Ring Protection Link (RPL) owner and a control VLAN. The major ring includes all sub-rings control VLANs as well.
 
 The sub-rings are connected to the main-ring on the one end to RPL owner switch to the `west` interface and on other the end to `far-end` switch to the `east` port. These two switches in sub-ring has only one interface port participating in the sub-ring. The sub-ring specify `major-ring` to send control packets.
-
-### Ethernet Ring Protection Switching (ERPS)
-
-The ERPS configuration defines multiple rings. Each switch in the `major-ring` has two interface ports: `west` and `east`, along with a Ring Protection Link (RPL) owner and a control VLAN. The main ring includes all control VLANs for the sub-rings as well.
-
-The sub-rings connect to the main ring at two points: one end connects to the RPL `owner` switch via the `west` interface, while the other end connects to the `far-end` switch via the `east` interface. The two switches at the edges of the sub-ring each have only one interface port participating in the sub-ring, and the sub-ring configuration specifies the `major-ring` to send control packets.
-
 
 ```python
 EPSR = {
