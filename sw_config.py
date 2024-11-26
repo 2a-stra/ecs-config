@@ -73,9 +73,9 @@ GROUPS = {
     "Core": ["10"],
     "c-Main": ["1002"],
     "c-Core": ["1001"],
-    "c-A-subring": ["1003"],
-    "c-B-subring": ["1004"],
-    "c-C-subring": ["1005"]
+    "c-A": ["1003"],
+    "c-B": ["1004"],
+    "c-C": ["1005"]
 }
 
 EPSR = {
@@ -83,9 +83,10 @@ EPSR = {
         "sub-ring": False,
         "name": "Main",
         "id": "2",
-        "owner": "102",
-        "members": ["101", "102", "103", "104"],
-        "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A-subring", "c-B-subring", "c-C-subring"],
+        "owner": "101",
+        "neighbor": "105",
+        "members": ["101", "102", "103", "104", "105"],
+        "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A", "c-B", "c-C"],
         "control": "c-Main",
         "west": "51",
         "east": "52",
@@ -97,22 +98,24 @@ EPSR = {
         "id": "1",
         "members": ["100", "101", "102"],
         "owner": "101",
+        "neighbor": "100",
         "far-end": "102",
         "vlan-groups": ["Main", "Core", "c-Core"],
         "control": "c-Core",
         "west": "49",       # west connected to RPL owner by default
         "east": "50",       # east connected to RPL neighbor by default
     },
-     "A-subring": {
+     "A": {
         "sub-ring": True,
         "major-ring": "Main",
-        "name": "A-subring",
+        "name": "A",
         "id": "3",
-        "members": ["103", "104", "105"],
+        "members": ["103", "104", "130"],
         "owner": "103",
+        "neighbor": "130",
         "far-end": "104",
-        "vlan-groups": ["Main", "c-A-subring"],
-        "control": "c-A-subring",
+        "vlan-groups": ["Main", "c-A"],
+        "control": "c-A",
         "west": "49",
         "east": "50",
     },
@@ -149,21 +152,28 @@ SW = {                      # VLAN access ports
         "20": list(range(1,  47)),  # form 1 to 46
         "5":  list(range(47, 48)),  # only 47 (48 - native vlan 1)
     },
-    "epsr": ["Main", "A-subring"]
+    "epsr": ["Main", "A"]
     },
 "104": {
     "vlans": {
         "20": list(range(1,  47)),  # VoIP
         "5":  list(range(47, 48)),  # Mngt
     },
-    "epsr": ["Main", "A-subring"]
+    "epsr": ["Main", "A"]
     },
 "105": {
+    "vlans": {
+        "20": list(range(1,  47)),  # VoIP
+        "5":  list(range(47, 48)),  # Mngt
+    },
+    "epsr": ["Main"]
+    },
+"130": {
     "vlans": {
         "20": list(range(1,  47)),
         "5":  list(range(47, 48)),
     },
-    "epsr": ["A-subring"]
+    "epsr": ["A"]
     },
 }
 

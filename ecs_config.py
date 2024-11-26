@@ -43,31 +43,43 @@ def ring_interface(number):
                 if number in ring_main["owner"]:
                     interface = '''!
 interface ethernet 1/{west}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled\n'''.format(vlans=vlans, west=ring_main["west"])
                 elif number in ring_main["far-end"]:
                     interface = '''!
 interface ethernet 1/{east}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"])
                 else:
                     interface = '''!
 interface ethernet 1/{east}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled
 !
 interface ethernet 1/{west}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"], west=ring_main["west"])
 
             else:
                 interface = '''!
 interface ethernet 1/{east}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled
 !
 interface ethernet 1/{west}
+    no loopback-detection
     switchport allowed vlan add {vlans} tagged
+    switchport allowed vlan remove 1
     spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"], west=ring_main["west"])
 
             out += interface
@@ -144,6 +156,8 @@ def ring_instance(number):
             rpl = ""
             if number == ring_main["owner"]:
                 rpl = "\n    rpl owner"
+            elif number == ring_main["neighbor"]:
+                rpl = "\n    rpl neighbor"
 
             major = ""
             if ring_main["sub-ring"]:
