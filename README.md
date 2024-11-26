@@ -40,9 +40,9 @@ GROUPS = {
     "Core": ["10"],
     "c-Main": ["1002"],
     "c-Core": ["1001"],
-    "c-A-subring": ["1003"],
-    "c-B-subring": ["1004"],
-    "c-C-subring": ["1005"]
+    "c-A": ["1003"],
+    "c-B": ["1004"],
+    "c-C": ["1005"]
 }
 ```
 
@@ -50,7 +50,9 @@ GROUPS = {
 
 The EPRS configuration describes multiple rings. All switches in the `major-ring` has two interface ports `west` and `east`, the Ring Protection Link (RPL) owner and a control VLAN. The major ring includes all sub-rings control VLANs as well.
 
-The sub-rings are connected to the main-ring on the one end to RPL owner switch to the `west` interface and on other the end to `far-end` switch to the `east` port. These two switches in sub-ring has only one interface port participating in the sub-ring. The sub-ring specify `major-ring` to send control packets.
+![ERPS multiple rings](erps_rings_scheme.webp "Network connection scheme with multiple ERPS rings")
+
+The sub-rings are connected to the major-ring on the one end to RPL owner switch to the `west` interface and on other the end to `far-end` switch to the `east` port. These two termination switches in sub-ring has only one interface port participating in the sub-ring. The sub-ring specify `major-ring` to send control packets.
 
 ```python
 EPSR = {
@@ -58,9 +60,10 @@ EPSR = {
         "sub-ring": False,
         "name": "Main",
         "id": "2",
-        "owner": "102",
-        "members": ["101", "102", "103", "104"],
-        "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A-subring", "c-B-subring", "c-C-subring"],
+        "owner": "101",
+        "neighbor": "105",
+        "members": ["101", "102", "103", "104", "105"],
+        "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A", "c-B", "c-C"],
         "control": "c-Main",
         "west": "51",
         "east": "52",
@@ -72,6 +75,7 @@ EPSR = {
         "id": "1",
         "members": ["100", "101", "102"],
         "owner": "101",
+        "neighbor": "100",
         "far-end": "102",
         "vlan-groups": ["Main", "Core", "c-Core"],
         "control": "c-Core",
@@ -83,6 +87,13 @@ EPSR = {
 
 ## Config generation
 
+### Generate configs for all switches
+
+Generate config files for all configured switches at once:
+```sh
+python3 gen_config_all.py
+```
+
 ### Generate config for particular switch
 
 Generate config for switch number `100`:
@@ -91,12 +102,5 @@ python3 ecs_config.py 100
 ```
 
 As a result, an output file named `sw100.cfg` will be generated in the local directory. By default, the switch will be named 'switch-100' with a management IP address of '192.168.5.100.'
-
-### Generate configs for all switches
-
-Generate config files for all configured switches at once:
-```sh
-python3 gen_config_all.py
-```
 
 These scripts automate Edge-Core ECS4100 switch configurations, enabling fast upload of generated config files and accelerating network deployment with IP settings, VLANs, and ERPS for enhanced reliability.
