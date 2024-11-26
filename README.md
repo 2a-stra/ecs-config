@@ -48,11 +48,11 @@ GROUPS = {
 
 ### Ethernet Ring Protection switching (ERPS)
 
-The EPRS configuration describes multiple rings. All switches in the `major-ring` has two interface ports `west` and `east`, the Ring Protection Link (RPL) owner and a control VLAN. The major ring includes all sub-rings control VLANs as well.
+The EPRS configuration defines multiple rings. Each switch in the Major ring has two interface ports, `west` and `east`, along with the Ring Protection Link (RPL) owner and a control VLAN. The major ring also includes the control VLANs of all sub-rings.
 
 ![ERPS multiple rings](erps_rings_scheme.webp "Network connection scheme with multiple ERPS rings")
 
-The sub-rings are connected to the major-ring on the one end to RPL owner switch to the `west` interface and on other the end to `far-end` switch to the `east` port. These two termination switches in sub-ring has only one interface port participating in the sub-ring. The sub-ring specify `major-ring` to send control packets.
+The sub-rings are connected to the Major ring at one end, where they link to the RPL owner switch through the `west` interface, and at the other end, they connect to the `far-end` switch via the `east` port. These two termination switches in the sub-ring each have only one interface port participating in the sub-ring. The sub-ring is configured to specify the `major-ring` for sending control packets.
 
 ```python
 EPSR = {
@@ -102,5 +102,17 @@ python3 ecs_config.py 100
 ```
 
 As a result, an output file named `sw100.cfg` will be generated in the local directory. By default, the switch will be named 'switch-100' with a management IP address of '192.168.5.100.'
+
+## Switch ERPS instance status
+
+In normal operation, switches are set to the `Idle` state, and no Signal Fail (SL) messages are received. The RPL owner blocks the `west` interface, while the RPL neighbor blocks the `east` interface accordingly.
+
+Core ring RPL owner `switch-101` settings:
+
+![ERPS Core sub-rings owner](erps_sw101.webp "Core sub-ring owner settings")
+
+Core ring RPL neighbor `switch-100` settings:
+
+![ERPS Core sub-rings neighbor](erps_sw100.webp "Core sub-ring neighbor settings")
 
 These scripts automate Edge-Core ECS4100 switch configurations, enabling fast upload of generated config files and accelerating network deployment with IP settings, VLANs, and ERPS for enhanced reliability.
