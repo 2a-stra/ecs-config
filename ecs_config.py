@@ -29,7 +29,8 @@ interface ethernet 1/{port}
 def ring_interface(number):
 
     out = ""
-    for ring in SW[number]["epsr"]:
+    epsr_rings = SW[number]["epsr"]
+    for ring in epsr_rings.keys():
         ring_main = EPSR[ring]
 
         if number in ring_main["members"]:
@@ -46,14 +47,14 @@ interface ethernet 1/{west}
     no loopback-detection
     switchport allowed vlan add {vlans} tagged
     switchport allowed vlan remove 1
-    spanning-tree spanning-disabled\n'''.format(vlans=vlans, west=ring_main["west"])
+    spanning-tree spanning-disabled\n'''.format(vlans=vlans, west=epsr_rings[ring]["west"])
                 elif number in ring_main["far-end"]:
                     interface = '''!
 interface ethernet 1/{east}
     no loopback-detection
     switchport allowed vlan add {vlans} tagged
     switchport allowed vlan remove 1
-    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"])
+    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=epsr_rings[ring]["east"])
                 else:
                     interface = '''!
 interface ethernet 1/{east}
@@ -66,7 +67,7 @@ interface ethernet 1/{west}
     no loopback-detection
     switchport allowed vlan add {vlans} tagged
     switchport allowed vlan remove 1
-    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"], west=ring_main["west"])
+    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=epsr_rings[ring]["east"], west=epsr_rings[ring]["west"])
 
             else:
                 interface = '''!
@@ -80,7 +81,7 @@ interface ethernet 1/{west}
     no loopback-detection
     switchport allowed vlan add {vlans} tagged
     switchport allowed vlan remove 1
-    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=ring_main["east"], west=ring_main["west"])
+    spanning-tree spanning-disabled\n'''.format(vlans=vlans, east=epsr_rings[ring]["east"], west=epsr_rings[ring]["west"])
 
             out += interface
 
@@ -92,7 +93,8 @@ def vlan_groups(number):
     out = "!\nerps\n" # enable ERPS
 
     group_names = set()
-    for ring in SW[number]["epsr"]:
+    epsr_rings = SW[number]["epsr"]
+    for ring in epsr_rings.keys():
         ring_main = EPSR[ring]
 
         if number in ring_main["members"]:
@@ -112,7 +114,8 @@ erps vlan-group {name}-group add {vlans}\n'''.format(name=name, vlans=vlans1)
 def ring_ports(number):
 
     out = ""
-    for ring in SW[number]["epsr"]:
+    epsr_rings = SW[number]["epsr"]
+    for ring in epsr_rings.keys():
         ring_main = EPSR[ring]
 
         if number in ring_main["members"]:
@@ -121,24 +124,24 @@ def ring_ports(number):
                     erps = '''!
 erps ring {name}-ring
     ring-port west interface ethernet 1/{west}
-    enable\n'''.format(**ring_main)
+    enable\n'''.format(name=ring, west=epsr_rings[ring]["west"])
                 elif number in ring_main["far-end"]:
                     erps = '''!
 erps ring {name}-ring
     ring-port east interface ethernet 1/{east}
-    enable\n'''.format(**ring_main)
+    enable\n'''.format(name=ring, east=epsr_rings[ring]["east"])
                 else:
                     erps = '''!
 erps ring {name}-ring
     ring-port east interface ethernet 1/{east}
     ring-port west interface ethernet 1/{west}
-    enable\n'''.format(**ring_main)
+    enable\n'''.format(name=ring, west=epsr_rings[ring]["west"], east=epsr_rings[ring]["east"])
             else:
                 erps = '''!
 erps ring {name}-ring
     ring-port east interface ethernet 1/{east}
     ring-port west interface ethernet 1/{west}
-    enable\n'''.format(**ring_main)
+    enable\n'''.format(name=ring, west=epsr_rings[ring]["west"], east=epsr_rings[ring]["east"])
 
             out += erps
 
