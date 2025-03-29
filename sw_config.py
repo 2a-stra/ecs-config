@@ -83,41 +83,35 @@ EPSR = {
         "sub-ring": False,
         "name": "Main",
         "id": "2",
-        "owner": "101",
-        "neighbor": "105",
+        "owner": "105",
+        "neighbor": "106",
         "members": ["101", "102", "103", "104", "105"],
         "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A", "c-B", "c-C"],
         "control": "c-Main",
-        "west": "51",
-        "east": "52",
     },
     "Core": {
         "sub-ring": True,
         "major-ring": "Main",
         "name": "Core",
         "id": "1",
-        "members": ["100", "101", "102"],
-        "owner": "101",
-        "neighbor": "100",
-        "far-end": "102",
+        "members": ["100", "101", "102", "110", "111"],
+        "owner": "102",
+        "neighbor": "111",
+        "far-end": "101",
         "vlan-groups": ["Main", "Core", "c-Core"],
         "control": "c-Core",
-        "west": "49",       # west connected to RPL owner by default
-        "east": "50",       # east connected to RPL neighbor by default
     },
      "A": {
         "sub-ring": True,
         "major-ring": "Main",
         "name": "A",
         "id": "3",
-        "members": ["103", "104", "130"],
+        "members": ["103", "104", "120"],
         "owner": "103",
-        "neighbor": "130",
+        "neighbor": "120",
         "far-end": "104",
         "vlan-groups": ["Main", "c-A"],
         "control": "c-A",
-        "west": "49",
-        "east": "50",
     },
 }
 
@@ -129,7 +123,12 @@ SW = {                      # VLAN access ports
         "10": list(range(25, 37)),  # from 25 to 36 - Core
         "5":  list(range(37, 43)),  # from 37 to 42 - Management
     },
-    "epsr": ["Core"]        # Add the member to EPSR as well
+    "epsr": {  # Add the member to EPSR as well
+        "Core": {
+            "west": 49,  # SFP
+            "east": 50,  # SFP
+            }
+        }
     },
 "101": {
     "vlans": {
@@ -137,7 +136,15 @@ SW = {                      # VLAN access ports
         "10": list(range(25, 37)),
         "5":  list(range(37, 43)),
     },
-    "epsr": ["Main", "Core"]
+    "epsr": {
+        "Main": {
+            "west": 47,  # UTP
+            "east": 48   # UTP
+            },
+        "Core": {
+            "east": 50,  # SFP
+            }
+        }
     },
 "102": {
     "vlans": {
@@ -145,35 +152,69 @@ SW = {                      # VLAN access ports
         "10": list(range(25, 37)),  # Core
         "5":  list(range(37, 43)),  # Mngt
     },
-    "epsr": ["Main", "Core"]
+    "epsr": {
+        "Main": {
+            "west": 47, # UTP
+            "east": 52  # SFP
+            },
+        "Core": {
+            "west": 49, # SFP
+            }
+        }
     },
 "103": {
     "vlans": {
-        "20": list(range(1,  47)),  # form 1 to 46
-        "5":  list(range(47, 48)),  # only 47 (48 - native vlan 1)
+        "20": list(range(1,  45)),  # form 1 to 44 VoIP
+        "5":  list(range(45, 46)),  # only 45 Mngt (46 - native vlan 1)
     },
-    "epsr": ["Main", "A"]
+    "epsr": {
+        "Main": {
+            "west": 51,
+            "east": 48   # UTP
+            },
+        "A": {
+            "west": 49,
+            }
+        }
     },
 "104": {
     "vlans": {
-        "20": list(range(1,  47)),  # VoIP
-        "5":  list(range(47, 48)),  # Mngt
+        "20": list(range(1,  45)),  # form 1 to 44 VoIP
+        "5":  list(range(45, 46)),  # only 45 Mngt (46 - native vlan 1)
     },
-    "epsr": ["Main", "A"]
+    "epsr": {
+        "Main": {
+            "west": 47,  # UTP
+            "east": 52
+            },
+        "A": {
+            "east": 50,
+            }
+        }
     },
 "105": {
     "vlans": {
-        "20": list(range(1,  47)),  # VoIP
-        "5":  list(range(47, 48)),  # Mngt
+        "20": list(range(1,  45)),  # form 1 to 44 VoIP
+        "5":  list(range(45, 46)),  # only 45 Mngt (46 - native vlan 1)
     },
-    "epsr": ["Main"]
+    "epsr": {
+        "Main": {
+            "west": 51,
+            "east": 48  # UTP
+            },
+        }
     },
-"130": {
+"120": {
     "vlans": {
-        "20": list(range(1,  47)),
-        "5":  list(range(47, 48)),
+        "20": list(range(1,  45)),  # form 1 to 44 VoIP
+        "5":  list(range(45, 46)),  # only 45 Mngt (46 - native vlan 1)
     },
-    "epsr": ["A"]
-    },
+    "epsr": {
+        "A": {
+            "west": 49,
+            "east": 50
+            },
+        },
+    }
 }
 
