@@ -69,13 +69,13 @@ end
 !'''
 
 GROUPS = {
-    "Main": ["5", "20"],
-    "Core": ["10"],
-    "c-Main": ["1002"],
-    "c-Core": ["1001"],
-    "c-A": ["1003"],
-    "c-B": ["1004"],
-    "c-C": ["1005"]
+    "Main": [5, 20],
+    "Core": [10],
+    "c-Main": [1002],
+    "c-Core": [1001],
+    "c-A": [1003],
+    "c-B": [1004],
+    "c-C": [1005]
 }
 
 EPSR = {
@@ -131,20 +131,34 @@ SW = {                      # VLAN access ports
         }
     },
 "101": {
-    "vlans": {
-        "20": list(range(1,  25)),   # from 1 to 24
-        "10": list(range(25, 37)),
-        "5":  list(range(37, 43)),
-    },
+    "vlans": {                              # VLAN access ports
+        "20": list(range(1,  13)),          # from 1 to 12          - VoIP
+        "30": list(range(13, 25)),          # VID 30                - Lab test
+        "10": list(range(25, 37)) + [52],   # from 25 to 36 and 52  - Core
+        "5":  list(range(37, 43)),          # from 37 to 42         - Management
+        },
     "epsr": {
         "Main": {
             "west": 47,  # UTP
             "east": 48   # UTP
             },
         "Core": {
-            "east": 50,  # SFP
+            "east": 50,  # SFP (Far-end)
             }
-        }
+        },
+    "port-sec": list(range(1, 3)) + [52],  # port security (access ports)
+    "source-guard": [
+            {
+            "port":  52,                   # external server
+            "mode": "acl",
+            "vlan":  10,
+            "ip":    "192.168.0.123",
+            "mac":   "XX-XX-XX-XX-XX-XX",
+            },
+        ],
+    "dhcp-vlans": ["20"],           # dhcp snooping vlans
+    "dhcp-trust": [11, 50],         # dhcp snooping trusted ports
+    "dhcp-filter": [47, 48, 50],    # dhcp filter-only
     },
 "102": {
     "vlans": {
@@ -217,4 +231,3 @@ SW = {                      # VLAN access ports
         },
     }
 }
-

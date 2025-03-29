@@ -18,7 +18,7 @@ VLAN access ports config per switch number:
 
 ```python
 SW = {
-"100": {
+"101": {
     "vlans": {                              # VLAN access ports
         "20": list(range(1,  13)),          # from 1 to 12          - VoIP
         "30": list(range(13, 25)),          # VID 30                - Lab test
@@ -51,7 +51,7 @@ SW = {
 } # Add new SW to ESPR members list!
 ```
 
-In the example configuration, Switch 100 is configured with ports 1 to 12 assigned as untagged VLAN 20 ports. The switch is a member of the ERPS ring named 'Main', with west port 47 and east port 48. Additionally, Switch 100 is part of the sub-ring 'Core', with port 50 assigned to this sub-ring.
+In the example configuration, Switch 101 is configured with ports 1 to 12 assigned as untagged VLAN 20 ports. The switch is a member of the ERPS ring named 'Main', with west port 47 and east port 48. Additionally, Switch 101 is part of the sub-ring 'Core', with port 50 assigned to this sub-ring.
 
 Further configuration details include:
 
