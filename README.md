@@ -19,30 +19,58 @@ VLAN access ports config per switch number:
 ```python
 SW = {
 "100": {
-    "vlans": {              # VLAN access ports
-        "20": list(range(1,  13)),  # from 1 to 12  - VoIP
-        "30": list(range(13, 25)),  # VID 30        - Lab test
-        "10": list(range(25, 37)),  # from 25 to 36 - Core
-        "5":  list(range(37, 43)),  # from 37 to 42 - Management
-    },
-    "epsr": ["Core"]        # Add the member 100 to EPSR config as well
-    },
-}
+    "vlans": {                              # VLAN access ports
+        "20": list(range(1,  13)),          # from 1 to 12          - VoIP
+        "30": list(range(13, 25)),          # VID 30                - Lab test
+        "10": list(range(25, 37)) + [52],   # from 25 to 36 and 52  - Core
+        "5":  list(range(37, 43)),          # from 37 to 42         - Management
+        },
+    "epsr": {
+        "Main": {
+            "west": 47,  # UTP
+            "east": 48   # UTP
+            },
+        "Core": {
+            "east": 50,  # SFP (Far-end)
+            }
+        },
+    "port-sec": list(range(1, 3)) + [52],  # port security (access ports)
+    "source-guard": [
+            {
+            "port":  52,                   # external server
+            "mode": "acl",
+            "vlan":  10,
+            "ip":    "192.168.0.123",
+            "mac":   "XX-XX-XX-XX-XX-XX",
+            },
+        ],
+    "dhcp-vlans": ["20"],           # dhcp snooping vlans
+    "dhcp-trust": [11, 50],         # dhcp snooping trusted ports
+    "dhcp-filter": [47, 48, 50],    # dhcp filter-only
+    }
+} # Add new SW to ESPR members list!
 ```
 
-In the example configuration above, switch number 100 has ports 1 to 12 assigned as untagged VLAN 20 ports and is also a member of the ERPS ring named 'Core'.
+In the example configuration, Switch 100 is configured with ports 1 to 12 assigned as untagged VLAN 20 ports. The switch is a member of the ERPS ring named 'Main', with west port 47 and east port 48. Additionally, Switch 100 is part of the sub-ring 'Core', with port 50 assigned to this sub-ring.
+
+Further configuration details include:
+
+- Port Security: Enabled on ports 1, 2, and 52.
+- IP Source Guard: Applied to port 52 with an Access Control List (ACL) to filter traffic.
+- DHCP Snooping: Enabled on VLAN 20. Ports 11 and 50 are configured as trusted for DHCP servers.
+- Trunk Port Filtering: Ports 47, 48, and 50 are configured as filter-only trunks with unlimited DHCP clients allowed on them.
 
 ### VLAN groups names with VLAN IDs
 
 ```python
 GROUPS = {
-    "Main": ["5", "20"],
-    "Core": ["10"],
-    "c-Main": ["1002"],
-    "c-Core": ["1001"],
-    "c-A": ["1003"],
-    "c-B": ["1004"],
-    "c-C": ["1005"]
+    "Main": [5, 20],
+    "Core": [10],
+    "c-Main": [1002],
+    "c-Core": [1001],
+    "c-A": [1003],
+    "c-B": [1004],
+    "c-C": [1005]
 }
 ```
 
@@ -65,8 +93,6 @@ EPSR = {
         "members": ["101", "102", "103", "104", "105"],
         "vlan-groups": ["Main", "Core", "c-Core", "c-Main", "c-A", "c-B", "c-C"],
         "control": "c-Main",
-        "west": "51",
-        "east": "52",
     },
     "Core": {
         "sub-ring": True,
@@ -79,8 +105,6 @@ EPSR = {
         "far-end": "102",
         "vlan-groups": ["Main", "Core", "c-Core"],
         "control": "c-Core",
-        "west": "49",       # west connected to RPL owner by default
-        "east": "50",       # east connected to RPL neighbor by default
     },
 }
 ```
